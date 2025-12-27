@@ -1,3 +1,4 @@
+using BudgetOnline.Api.Middleware;
 using BudgetOnline.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
