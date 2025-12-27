@@ -7,5 +7,7 @@ public record CreateTransactionRequest(
     string Description,
     [Range(0.01, double.MaxValue)] 
     decimal Amount,
-    DateTime Date
+    DateTime Date,
+    [Required]
+    Guid CategoryId
 );

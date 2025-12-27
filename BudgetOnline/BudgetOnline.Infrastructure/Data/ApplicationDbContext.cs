@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     }
 
     public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<Category> Categories { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -22,5 +23,13 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+
+        var foodId = Guid.NewGuid();
+        var rentId = Guid.NewGuid();
+
+        modelBuilder.Entity<Category>().HasData(
+            new Category(foodId, "Food"),
+            new Category(rentId, "Rent")
+        );
     }
 }

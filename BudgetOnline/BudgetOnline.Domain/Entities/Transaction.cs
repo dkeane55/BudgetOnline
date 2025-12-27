@@ -7,7 +7,7 @@ public class Transaction
     public string Description { get; private set; } = string.Empty;
     public DateTime Date { get; private set; }
     public Guid CategoryId { get; private set; }
-
+    public Category Category { get; private set; } = null!;
     private Transaction() { }
 
     public Transaction(Guid id, decimal amount, string description, DateTime date, Guid categoryId)
@@ -17,7 +17,9 @@ public class Transaction
 
         if (string.IsNullOrWhiteSpace(description))
             throw new ArgumentException("Description cannot be empty.", nameof(description));
-
+        
+        if (categoryId == Guid.Empty)
+            throw new ArgumentException("Transaction must belong to a valid category.", nameof(categoryId));
         Id = id;
         Amount = amount;
         Description = description;
