@@ -28,13 +28,20 @@ public class TransactionsController(ApplicationDbContext context) : ControllerBa
     [HttpPost]
     public async Task<ActionResult<Transaction>> CreateTransaction(CreateTransactionRequest request)
     {
+        var categoryExists = await context.Categories.AnyAsync(c => c.Id == request.CategoryId);
+
+        if (!categoryExists)
+        {
+            return BadRequest("Category Id does not exist");
+        }
+
         var transaction = new Transaction
         (
             Guid.NewGuid(),
             request.Amount,
             request.Description,
             request.Date,
-            Guid.Empty
+            request.CategoryId
         );
         context.Transactions.Add(transaction);
         await context.SaveChangesAsync();

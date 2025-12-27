@@ -3,6 +3,7 @@ using System;
 using BudgetOnline.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetOnline.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251224013226_AddCategoriesTable")]
+    partial class AddCategoriesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.22");
@@ -30,18 +33,6 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("3493639e-8408-4530-b35b-6ff783ca7fc6"),
-                            Name = "Food"
-                        },
-                        new
-                        {
-                            Id = new Guid("9fcc1059-3d1d-4e48-a40b-9ebc5a6517b1"),
-                            Name = "Rent"
-                        });
                 });
 
             modelBuilder.Entity("BudgetOnline.Domain.Entities.Transaction", b =>
@@ -67,22 +58,9 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("Date");
 
                     b.ToTable("Transactions", (string)null);
-                });
-
-            modelBuilder.Entity("BudgetOnline.Domain.Entities.Transaction", b =>
-                {
-                    b.HasOne("BudgetOnline.Domain.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
