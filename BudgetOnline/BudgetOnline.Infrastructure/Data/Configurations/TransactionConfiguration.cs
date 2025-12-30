@@ -20,9 +20,9 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasPrecision(18, 2)
             .IsRequired();
 
-        builder.Property(t => t.Date)
+        builder.Property(t => t.ExpenseDate)
             .IsRequired();
 
-        builder.HasIndex(t => t.Date);
+        builder.HasIndex(t => t.ExpenseDate);
     }   
 }

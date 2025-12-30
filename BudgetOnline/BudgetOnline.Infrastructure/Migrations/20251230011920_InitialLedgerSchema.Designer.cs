@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BudgetOnline.Infrastructure.Data.Migrations
+namespace BudgetOnline.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251227040509_AddBudget")]
-    partial class AddBudget
+    [Migration("20251230011920_InitialLedgerSchema")]
+    partial class InitialLedgerSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,13 +40,13 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5a37242f-ac76-4a55-b997-42470f0479fb"),
+                            Id = new Guid("e045198f-3472-431c-bc2f-9bedab363659"),
                             Budget = 100m,
                             Name = "Food"
                         },
                         new
                         {
-                            Id = new Guid("80ae648f-add0-4127-8d8b-ddaa1a459a4a"),
+                            Id = new Guid("4041db3b-c7de-4014-8c40-038fbda3bf41"),
                             Budget = 500m,
                             Name = "Rent"
                         });
@@ -65,7 +65,10 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -73,11 +76,19 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("ExpenseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Date");
+                    b.HasIndex("CorrelationId");
+
+                    b.HasIndex("ExpenseDate");
 
                     b.ToTable("Transactions", (string)null);
                 });

@@ -3,19 +3,16 @@ using System;
 using BudgetOnline.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BudgetOnline.Infrastructure.Data.Migrations
+namespace BudgetOnline.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251224013226_AddCategoriesTable")]
-    partial class AddCategoriesTable
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.22");
@@ -26,6 +23,9 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal>("Budget")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -33,6 +33,20 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e045198f-3472-431c-bc2f-9bedab363659"),
+                            Budget = 100m,
+                            Name = "Food"
+                        },
+                        new
+                        {
+                            Id = new Guid("4041db3b-c7de-4014-8c40-038fbda3bf41"),
+                            Budget = 500m,
+                            Name = "Rent"
+                        });
                 });
 
             modelBuilder.Entity("BudgetOnline.Domain.Entities.Transaction", b =>
@@ -48,7 +62,10 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -56,11 +73,32 @@ namespace BudgetOnline.Infrastructure.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("ExpenseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Date");
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CorrelationId");
+
+                    b.HasIndex("ExpenseDate");
 
                     b.ToTable("Transactions", (string)null);
+                });
+
+            modelBuilder.Entity("BudgetOnline.Domain.Entities.Transaction", b =>
+                {
+                    b.HasOne("BudgetOnline.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
