@@ -35,12 +35,12 @@ public class TransactionsController : ControllerBase
         return CreatedAtAction(nameof(GetTransactions), new { id = response.Id }, response);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateTransaction(Guid id, UpdateTransactionRequest request, CancellationToken ct)
+    [HttpPost("{id}/reclassify")]
+    public async Task<ActionResult> ReclassifyTransaction(Guid id, ReclassifyTransactionRequest request, CancellationToken ct)
     {
         try
         {
-            var transactionSuccess = await _transactionService.UpdateTransactionAsync(id, request, ct);
+            var transactionSuccess = await _transactionService.ReclassifyTransactionAsync(id, request.NewCategoryId, ct);
             if (!transactionSuccess)
             {
                 return NotFound();
@@ -53,13 +53,21 @@ public class TransactionsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTransaction(Guid id, CancellationToken ct)
+    [HttpPost("{id}/void")]
+    public async Task<IActionResult> VoidTransaction(Guid id, CancellationToken ct)
     {
-        var transactionSuccess = await _transactionService.DeleteTransactionAsync(id, ct);
-        if (!transactionSuccess)
+
+        try
         {
-            return NotFound();
+            var transactionSuccess = await _transactionService.VoidTransactionAsync(id, ct);
+            if (!transactionSuccess)
+            {
+                return NotFound();
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
         }
 
         return NoContent();

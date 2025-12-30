@@ -1,26 +1,27 @@
 ﻿namespace BudgetOnline.Domain.Entities;
 
+public enum TransactionType
+{
+    Original = 1,
+    Reversal = 2
+}
+
 public class Transaction
 {
     public Guid Id { get; private set; }
     public decimal Amount { get; private set; }
-    public string Description { get; private set; } = string.Empty;
-    public DateTime Date { get; private set; }
     public Guid CategoryId { get; private set; }
+    public string Description { get; private set; } = string.Empty;
+    public DateTime ExpenseDate { get; private set; }
     public Category Category { get; private set; } = null!;
-    private Transaction() { }
-    public void UpdateDetails(string description, decimal amount, DateTime date, Guid categoryId)
-    {
-        if (amount <= 0) throw new ArgumentException("Amount must be positive");
-        if (string.IsNullOrWhiteSpace(description)) throw new ArgumentException("Description required");
-        if (categoryId == Guid.Empty) throw new ArgumentException("Valid Category required");
 
-        Description = description;
-        Amount = amount;
-        Date = date;
-        CategoryId = categoryId;
-    }
-    public Transaction(Guid id, decimal amount, string description, DateTime date, Guid categoryId)
+    public TransactionType Type { get; private set; }
+    public Guid CorrelationId { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+
+    private Transaction() { }
+    public Transaction(decimal amount, Guid categoryId, string description, DateTime expenseDate, 
+            TransactionType type, Guid correlationId)
     {
         if(amount <= 0)
             throw new ArgumentException("Amount must be greater than zero.", nameof(amount));
@@ -30,10 +31,13 @@ public class Transaction
         
         if (categoryId == Guid.Empty)
             throw new ArgumentException("Transaction must belong to a valid category.", nameof(categoryId));
-        Id = id;
+        Id = Guid.NewGuid();
         Amount = amount;
-        Description = description;
-        Date = date;
         CategoryId = categoryId;
+        Description = description;
+        ExpenseDate = expenseDate;
+        Type = type;
+        CorrelationId = correlationId;
+        CreatedAt = DateTime.UtcNow;
     }
 }

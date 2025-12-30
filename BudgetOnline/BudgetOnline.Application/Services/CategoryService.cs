@@ -31,8 +31,6 @@ public class CategoryService(IApplicationDbContext context) : ICategoryService
         _context.Categories.Add(category);
         await _context.SaveChangesAsync(ct);
 
-        var response = new CategoryResponse(category.Id, category.Name);
-
         return new CategoryResponse(category.Id, category.Name);
     }
 
@@ -49,8 +47,10 @@ public class CategoryService(IApplicationDbContext context) : ICategoryService
                 c.Name,
                 c.Budget,
                 TotalSpent = (decimal)(_context.Transactions
-                    .Where(t => t.CategoryId == c.Id && t.Date >= start && t.Date < end)
-                    .Sum(t => (double?)t.Amount) ?? 0)
+                .Where(t => t.CategoryId == c.Id && t.ExpenseDate >= start && t.ExpenseDate <= end)
+                .Sum(t => t.Type == TransactionType.Original
+                          ? (double?)t.Amount
+                          : (double?)-t.Amount) ?? 0)
             })
             .ToListAsync();
 
