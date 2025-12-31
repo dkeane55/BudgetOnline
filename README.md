@@ -1,4 +1,5 @@
 Budget Ledger API
+
 This project began as a simple CRUD budgeting API. While functional, that approach broke down once corrections, historical accuracy, and explainability of transactions were considered.
 The core model was refactored to better align with how financial systems behave in practice.
 
